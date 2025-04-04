@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: dev-portal
+  profiles:
+    active: dev
+
+  jackson:
+    mapper:
+      accept-case-insensitive-enums: true
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false

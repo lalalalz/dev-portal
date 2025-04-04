@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: dev-portal
+
+  jackson:
+    mapper:
+      accept-case-insensitive-enums: true
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: dev-portal
+      username: admin
+      password: password
+      authentication-database: admin
