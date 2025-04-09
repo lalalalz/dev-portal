@@ -2,7 +2,7 @@ spring:
   application:
     name: dev-portal
   profiles:
-    active: dev
+    active: local
 
   jackson:
     mapper:

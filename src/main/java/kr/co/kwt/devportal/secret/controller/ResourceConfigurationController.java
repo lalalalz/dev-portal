@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import kr.co.kwt.devportal.secret.model.ResourceConfiguration;
 import kr.co.kwt.devportal.secret.service.ResourceConfigurationService;
 import kr.co.kwt.devportal.secret.service.command.AddResourceConfigurationsCommand;
-import kr.co.kwt.devportal.secret.service.command.SearchFlatResourceConfiguration;
+import kr.co.kwt.devportal.secret.service.command.SearchFlatResourceConfigurationProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -24,11 +24,11 @@ public class ResourceConfigurationController {
     }
 
     @ResponseBody
-    @GetMapping("/resource-configuration/flat")
-    public List<SearchFlatResourceConfiguration> getFlatResourceConfigurations(
+    @GetMapping("/resource-configuration/properties/flat")
+    public SearchFlatResourceConfigurationProperties getFlatResourceConfigurationProperties(
             @RequestParam("service") @NotBlank String service
     ) {
-        return resourceConfigurationService.getFlatResourceConfigurations(service);
+        return resourceConfigurationService.searchFlatResourceConfigurationProperties(service);
     }
 
     @ResponseBody

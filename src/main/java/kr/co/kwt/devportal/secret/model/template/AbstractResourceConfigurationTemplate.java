@@ -6,7 +6,6 @@ import kr.co.kwt.devportal.secret.model.ResourceType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
 @JsonTypeInfo(
@@ -20,7 +19,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 })
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "resourceConfigurationTemplates")
 public abstract class AbstractResourceConfigurationTemplate<T> implements ResourceConfigurationTemplate<T> {
 
     private T properties;

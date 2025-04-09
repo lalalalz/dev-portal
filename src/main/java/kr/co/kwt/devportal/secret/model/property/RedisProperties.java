@@ -1,17 +1,19 @@
 package kr.co.kwt.devportal.secret.model.property;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.time.Duration;
 import java.util.List;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RedisProperties {
 
     /**
      * Database index used by the connection factory.
      */
-    int database = 0;
+//    int database = 0;
 
     /**
      * Connection URL. Overrides host, port, username, and password. Example:
@@ -39,32 +41,32 @@ public class RedisProperties {
      */
     int port;
 
-    /**
-     * Read timeout.
-     */
-    Duration timeout;
-
-    /**
-     * Connection timeout.
-     */
-    Duration connectTimeout;
-
-    /**
-     * Client name to be set on connections with CLIENT SETNAME.
-     */
-    String clientName;
-
-    private ClientType clientType;
-
-    private Sentinel sentinel;
-
-    private Cluster cluster;
-
-    private final Ssl ssl = new Ssl();
-
-    private final Jedis jedis = new Jedis();
-
-    private final Lettuce lettuce = new Lettuce();
+//    /**
+//     * Read timeout.
+//     */
+//    Duration timeout;
+//
+//    /**
+//     * Connection timeout.
+//     */
+//    Duration connectTimeout;
+//
+//    /**
+//     * Client name to be set on connections with CLIENT SETNAME.
+//     */
+//    String clientName;
+//
+//    private ClientType clientType;
+//
+//    private Sentinel sentinel;
+//
+//    private Cluster cluster;
+//
+//    private final Ssl ssl = new Ssl();
+//
+//    private final Jedis jedis = new Jedis();
+//
+//    private final Lettuce lettuce = new Lettuce();
 
     /**
      * Type of Redis client to use.

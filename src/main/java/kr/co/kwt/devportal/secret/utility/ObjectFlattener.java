@@ -16,14 +16,14 @@ public class ObjectFlattener {
 
     private final ObjectMapper objectMapper;
 
-    public Map<String, Object> flatten(Object object) {
+    public Map<String, Object> flattenMap(Object object) {
         JsonNode jsonNode = objectMapper.valueToTree(object);
         Map<String, Object> flattenedMap = new HashMap<>();
-        flatten(jsonNode, "", flattenedMap);
+        flattenMap(jsonNode, "", flattenedMap);
         return flattenedMap;
     }
 
-    private static void flatten(JsonNode jsonNode, String prefix, Map<String, Object> flattenedMap) {
+    private static void flattenMap(JsonNode jsonNode, String prefix, Map<String, Object> flattenedMap) {
         if (jsonNode.isObject()) {
             ObjectNode objectNode = (ObjectNode) jsonNode;
             Iterator<Map.Entry<String, JsonNode>> fields = objectNode.fields();
@@ -34,7 +34,7 @@ public class ObjectFlattener {
                 JsonNode value = field.getValue();
 
                 if (value.isObject()) {
-                    flatten(value, key, flattenedMap);
+                    flattenMap(value, key, flattenedMap);
                 }
                 else if (value.isArray()) {
                     // 배열 처리
@@ -43,7 +43,7 @@ public class ObjectFlattener {
                         String arrayKey = key + "[" + i + "]";
 
                         if (arrayElement.isObject() || arrayElement.isArray()) {
-                            flatten(arrayElement, arrayKey, flattenedMap);
+                            flattenMap(arrayElement, arrayKey, flattenedMap);
                         }
                         else {
                             flattenedMap.put(arrayKey, unwrapValue(arrayElement));
@@ -62,7 +62,7 @@ public class ObjectFlattener {
                 String arrayKey = prefix + "[" + i + "]";
 
                 if (arrayElement.isObject() || arrayElement.isArray()) {
-                    flatten(arrayElement, arrayKey, flattenedMap);
+                    flattenMap(arrayElement, arrayKey, flattenedMap);
                 }
                 else {
                     flattenedMap.put(arrayKey, unwrapValue(arrayElement));
