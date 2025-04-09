@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: dev-portal
+
+  jackson:
+    mapper:
+      accept-case-insensitive-enums: true
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: dev-portal
+      username: admin
+      password: password
+      authentication-database: admin
+
+  datasource:
+    url: jdbc:mysql://192.168.100.100:30306/sys?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: dev_user
+    password: qlalfqjsgh!486
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+logging:
+  level:
+    org:
+      springframework:
+        jdbc:
+          core: TRACE
