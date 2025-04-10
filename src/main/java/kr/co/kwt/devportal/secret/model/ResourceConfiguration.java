@@ -7,6 +7,8 @@ public interface ResourceConfiguration<T> {
 
     ResourceConfigurationTemplate<T> getResourceConfigurationTemplate();
 
+    Environment getEnvironment();
+
     ProvisioningAccount getProvisioningAccount();
 
     String getService();

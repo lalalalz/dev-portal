@@ -18,6 +18,8 @@ import org.springframework.data.mongodb.core.mapping.DocumentReference;
 )
 @JsonSubTypes({
         @JsonSubTypes.Type(value = MySqlResourceConfiguration.class, name = "MYSQL"),
+        @JsonSubTypes.Type(value = KafkaResourceConfiguration.class, name = "KAFKA"),
+        @JsonSubTypes.Type(value = MongoResourceConfiguration.class, name = "MONGO"),
         @JsonSubTypes.Type(value = RedisResourceConfiguration.class, name = "REDIS")
 })
 @AllArgsConstructor
@@ -25,6 +27,7 @@ import org.springframework.data.mongodb.core.mapping.DocumentReference;
 public abstract class AbstractResourceConfiguration<T> implements ResourceConfiguration<T> {
 
     protected String service;
+    protected Environment environment;
     protected ResourceType resourceType;
     @DocumentReference
     protected ResourceConfigurationTemplate<T> resourceConfigurationTemplate;

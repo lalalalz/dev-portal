@@ -1,5 +1,6 @@
 package kr.co.kwt.devportal.secret.model.template;
 
+import kr.co.kwt.devportal.secret.model.Environment;
 import kr.co.kwt.devportal.secret.model.ResourceType;
 import kr.co.kwt.devportal.secret.model.property.DataSourceProperties;
 import lombok.Getter;
@@ -20,7 +21,10 @@ public class DataSourceResourceConfigurationTemplate extends AbstractResourceCon
     @Id
     private String id;
 
-    public DataSourceResourceConfigurationTemplate(@NonNull DataSourceProperties properties) {
-        super(properties, ResourceType.MYSQL, true);
+    public DataSourceResourceConfigurationTemplate(
+            @NonNull Environment environment,
+            @NonNull DataSourceProperties properties
+    ) {
+        super(environment, ResourceType.MYSQL, properties, true);
     }
 }

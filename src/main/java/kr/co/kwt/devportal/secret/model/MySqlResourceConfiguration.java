@@ -25,9 +25,10 @@ public class MySqlResourceConfiguration extends AbstractResourceConfiguration<Da
     @Builder
     public MySqlResourceConfiguration(
             @NonNull String service,
+            @NonNull Environment environment,
             @NonNull ResourceConfigurationTemplate<DataSourceProperties> resourceConfigurationTemplate,
             @NonNull ProvisioningAccount provisioningAccount
     ) {
-        super(service, ResourceType.MYSQL, resourceConfigurationTemplate, provisioningAccount);
+        super(service, environment, ResourceType.MYSQL, resourceConfigurationTemplate, provisioningAccount);
     }
 }
