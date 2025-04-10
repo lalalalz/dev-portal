@@ -3,6 +3,7 @@ package kr.co.kwt.devportal.secret.service.command;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.validation.constraints.NotNull;
+import kr.co.kwt.devportal.secret.model.Environment;
 import kr.co.kwt.devportal.secret.model.ResourceType;
 import lombok.Getter;
 
@@ -15,10 +16,14 @@ import lombok.Getter;
 )
 @JsonSubTypes({
         @JsonSubTypes.Type(value = AddMysqlResourceConfigurationCommand.class, name = "MYSQL"),
+        @JsonSubTypes.Type(value = AddKafkaResourceConfigurationCommand.class, name = "KAFKA"),
+        @JsonSubTypes.Type(value = AddMongoResourceConfigurationCommand.class, name = "MONGO"),
         @JsonSubTypes.Type(value = AddRedisResourceConfigurationCommand.class, name = "REDIS")
 })
 public abstract class AddResourceConfigurationTemplateCommand<T> {
 
+    @NotNull
+    protected Environment environment;
     @NotNull
     protected ResourceType resourceType;
     @NotNull

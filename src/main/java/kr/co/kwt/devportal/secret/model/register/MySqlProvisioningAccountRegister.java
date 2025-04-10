@@ -1,5 +1,6 @@
 package kr.co.kwt.devportal.secret.model.register;
 
+import kr.co.kwt.devportal.secret.model.Environment;
 import kr.co.kwt.devportal.secret.model.ResourceType;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -15,7 +16,7 @@ public class MySqlProvisioningAccountRegister implements ProvisioningAccountRegi
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public ProvisioningAccount register(String service) {
+    public ProvisioningAccount register(String service, Environment environment) {
         try {
             // 기본값 설정
             if (service == null || service.isEmpty()) {

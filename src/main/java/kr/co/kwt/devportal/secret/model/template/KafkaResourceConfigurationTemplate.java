@@ -2,7 +2,7 @@ package kr.co.kwt.devportal.secret.model.template;
 
 import kr.co.kwt.devportal.secret.model.Environment;
 import kr.co.kwt.devportal.secret.model.ResourceType;
-import kr.co.kwt.devportal.secret.model.property.RedisProperties;
+import kr.co.kwt.devportal.secret.model.property.KafkaProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -13,15 +13,15 @@ import org.springframework.lang.NonNull;
 import static lombok.AccessLevel.PROTECTED;
 
 @Getter
-@TypeAlias("redisConfigurationTemplate")
+@TypeAlias("kafkaConfigurationTemplate")
 @Document(collection = "resourceConfigurationTemplates")
 @NoArgsConstructor(access = PROTECTED)
-public class RedisResourceConfigurationTemplate extends AbstractResourceConfigurationTemplate<RedisProperties> {
+public class KafkaResourceConfigurationTemplate extends AbstractResourceConfigurationTemplate<KafkaProperties> {
 
     @Id
     private String id;
 
-    public RedisResourceConfigurationTemplate(@NonNull Environment environment, @NonNull RedisProperties properties) {
-        super(environment, ResourceType.REDIS, properties, false);
+    public KafkaResourceConfigurationTemplate(@NonNull Environment environment, @NonNull KafkaProperties properties) {
+        super(environment, ResourceType.KAFKA, properties, false);
     }
 }

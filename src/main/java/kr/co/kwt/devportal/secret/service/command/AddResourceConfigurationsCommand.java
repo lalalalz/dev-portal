@@ -1,5 +1,6 @@
 package kr.co.kwt.devportal.secret.service.command;
 
+import kr.co.kwt.devportal.secret.model.Environment;
 import kr.co.kwt.devportal.secret.model.ResourceType;
 import lombok.Value;
 
@@ -10,6 +11,7 @@ import java.util.Map;
 public class AddResourceConfigurationsCommand {
 
     String service;
+    Environment environment;
     List<ResourceType> resourceTypes;
 
     @Value

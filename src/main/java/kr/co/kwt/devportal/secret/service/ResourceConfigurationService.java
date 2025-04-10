@@ -1,6 +1,8 @@
 package kr.co.kwt.devportal.secret.service;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import kr.co.kwt.devportal.secret.model.Environment;
 import kr.co.kwt.devportal.secret.model.ResourceConfiguration;
 import kr.co.kwt.devportal.secret.model.ResourceType;
 import kr.co.kwt.devportal.secret.model.register.ProvisioningAccount;
@@ -34,10 +36,13 @@ public class ResourceConfigurationService {
      *
      * @return
      */
-    public SearchFlatResourceConfigurationProperties searchFlatResourceConfigurationProperties(@NotBlank String service) {
+    public SearchFlatResourceConfigurationProperties searchFlatResourceConfigurationProperties(
+            @NotBlank String service, @NotNull Environment environment
+    ) {
+        List<ResourceConfiguration<?>> allByServiceAndEnvironment = resourceConfigurationRepository
+                .findAllByServiceAndEnvironment(service, environment);
         return new SearchFlatResourceConfigurationProperties(
-                resourceConfigurationRepository
-                        .findAllByService(service)
+                allByServiceAndEnvironment
                         .stream()
                         .map(this::flattenResourceConfigurationProperties)
                         .collect(HashMap::new, Map::putAll, Map::putAll));
@@ -56,7 +61,9 @@ public class ResourceConfigurationService {
 
         // 2. 프로비저닝 계정 프로퍼티 추가 (필요시)
         if (template.isSupportsAccountProvisioning()) {
-            Map<String, Object> accountProperties = objectFlattener.flattenMap(resourceConfiguration.getProvisioningAccount());
+            Map<String, Object> accountProperties = objectFlattener.flattenMap(
+                    resourceConfiguration.getProvisioningAccount());
+
             flattenedProperties.putAll(
                     accountProperties
                             .entrySet()
@@ -84,35 +91,40 @@ public class ResourceConfigurationService {
      */
     public List<ResourceConfiguration<?>> addResourceConfigurations(AddResourceConfigurationsCommand command) {
         String service = command.getService();
-        validateServiceNotAlreadyAdded(service);
+        Environment environment = command.getEnvironment();
+        validateServiceNotAlreadyAdded(service, environment);
 
         return command
                 .getResourceTypes()
                 .stream()
-                .map(resourceType -> createResourceConfiguration(service, resourceType))
+                .map(resourceType -> createResourceConfiguration(service, environment, resourceType))
                 .collect(toList());
     }
 
-    private void validateServiceNotAlreadyAdded(String service) {
-        List<ResourceConfiguration<?>> allByService = resourceConfigurationRepository
-                .findAllByService(service);
+    private void validateServiceNotAlreadyAdded(String service, Environment environment) {
         if (!resourceConfigurationRepository
-                .findAllByService(service)
+                .findAllByServiceAndEnvironment(service, environment)
                 .isEmpty()
         ) {
             throw new AlreadyAddedResourceConfiguration();
         }
     }
 
-    private ResourceConfiguration<?> createResourceConfiguration(String service, ResourceType resourceType) {
-        ResourceConfigurationTemplate<?> template = getTemplateForResourceType(resourceType);
-        ResourceConfiguration<?> configuration = instantiateResourceConfiguration(service, template);
+    private ResourceConfiguration<?> createResourceConfiguration(
+            String service, Environment environment, ResourceType resourceType
+    ) {
+        ResourceConfigurationTemplate<?> template = getTemplateForResourceType(environment, resourceType);
+        ResourceConfiguration<?> configuration = instantiateResourceConfiguration(service, environment, template);
         return resourceConfigurationRepository.save(configuration);
     }
 
-    private ResourceConfigurationTemplate<?> getTemplateForResourceType(ResourceType resourceType) {
-        Map<ResourceType, ResourceConfigurationTemplate<?>> templateMap = resourceConfigurationTemplateService
-                .getResourceTypeResourceConfigurationTemplateMap();
+    private ResourceConfigurationTemplate<?> getTemplateForResourceType(
+            Environment environment, ResourceType resourceType
+    ) {
+        Map<ResourceType, ResourceConfigurationTemplate<?>> templateMap =
+                resourceConfigurationTemplateService
+                        .getResourceTypeResourceConfigurationTemplateMap()
+                        .get(environment);
 
         if (!templateMap.containsKey(resourceType)) {
             throw new UnsupportedResourceTypeException();
@@ -122,23 +134,25 @@ public class ResourceConfigurationService {
     }
 
     private ResourceConfiguration<?> instantiateResourceConfiguration(
-            String service, ResourceConfigurationTemplate<?> template
+            String service, Environment environment, ResourceConfigurationTemplate<?> template
     ) {
         return template.isSupportsAccountProvisioning()
-                ? instantiateWithProvisioningAccount(service, template)
-                : instantiateWithoutProvisioningAccount(service, template);
+                ? instantiateWithProvisioningAccount(service, environment, template)
+                : instantiateWithoutProvisioningAccount(service, environment, template);
     }
 
     private ResourceConfiguration<?> instantiateWithProvisioningAccount(
-            String service, ResourceConfigurationTemplate<?> template
+            String service, Environment environment, ResourceConfigurationTemplate<?> template
     ) {
         try {
             Class<?> configClass = template.getResourceType().getResourceConfigurationClass();
-            ProvisioningAccount account = provisionAccountFor(service, template.getResourceType());
+            ProvisioningAccount account = provisionAccountFor(service, environment, template.getResourceType());
 
             return (ResourceConfiguration<?>) configClass
-                    .getDeclaredConstructor(String.class, ResourceConfigurationTemplate.class, ProvisioningAccount.class)
-                    .newInstance(service, template, account);
+                    .getDeclaredConstructor(
+                            String.class, Environment.class,
+                            ResourceConfigurationTemplate.class, ProvisioningAccount.class)
+                    .newInstance(service, environment, template, account);
         }
         catch (Exception e) {
             throw new CreateResourceConfigurationException(e);
@@ -146,26 +160,26 @@ public class ResourceConfigurationService {
     }
 
     private ResourceConfiguration<?> instantiateWithoutProvisioningAccount(
-            String service, ResourceConfigurationTemplate<?> template
+            String service, Environment environment, ResourceConfigurationTemplate<?> template
     ) {
         try {
             Class<?> configClass = template.getResourceType().getResourceConfigurationClass();
 
             return (ResourceConfiguration<?>) configClass
-                    .getDeclaredConstructor(String.class, ResourceConfigurationTemplate.class)
-                    .newInstance(service, template);
+                    .getDeclaredConstructor(String.class, Environment.class, ResourceConfigurationTemplate.class)
+                    .newInstance(service, environment, template);
         }
         catch (Exception e) {
             throw new CreateResourceConfigurationException(e);
         }
     }
 
-    private ProvisioningAccount provisionAccountFor(String service, ResourceType resourceType) {
+    private ProvisioningAccount provisionAccountFor(String service, Environment environment, ResourceType resourceType) {
         return provisioningAccountRegisters
                 .stream()
                 .filter(register -> register.supports(resourceType))
                 .findAny()
-                .map(register -> register.register(service))
+                .map(register -> register.register(service, environment))
                 .orElseThrow(UnsupportedResourceTypeException::new);
     }
 }
