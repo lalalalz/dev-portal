@@ -1,7 +1,6 @@
 package kr.co.kwt.devportal.secret.v2.model;
 
 import kr.co.kwt.devportal.secret.v2.model.register.ProvisioningAccount;
-import kr.co.kwt.devportal.secret.v2.model.template.ResourceConfigurationTemplate;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

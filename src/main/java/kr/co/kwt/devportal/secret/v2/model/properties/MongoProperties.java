@@ -1,4 +1,4 @@
-package kr.co.kwt.devportal.secret.v2.model.template.properties;
+package kr.co.kwt.devportal.secret.v2.model.properties;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AccessLevel;
@@ -9,15 +9,19 @@ import lombok.NoArgsConstructor;
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class KafkaProperties {
+public class MongoProperties {
 
-    private String bootstrapServers;
+    private String host;
+    private String port;
+    private String uri;
     private String username;
     private String password;
 
     @Builder
-    public KafkaProperties(String bootstrapServers, String username, String password) {
-        this.bootstrapServers = bootstrapServers;
+    public MongoProperties(String host, String port, String uri, String username, String password) {
+        this.host = host;
+        this.port = port;
+        this.uri = uri;
         this.username = username;
         this.password = password;
     }

@@ -1,4 +1,4 @@
-package kr.co.kwt.devportal.secret.v2.model.template.properties;
+package kr.co.kwt.devportal.secret.v2.model.properties;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AccessLevel;

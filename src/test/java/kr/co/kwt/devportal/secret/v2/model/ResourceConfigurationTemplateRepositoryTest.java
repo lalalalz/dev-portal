@@ -1,8 +1,6 @@
 package kr.co.kwt.devportal.secret.v2.model;
 
-import kr.co.kwt.devportal.secret.v2.model.template.RedisResourceConfigurationTemplate;
-import kr.co.kwt.devportal.secret.v2.model.template.ResourceConfigurationTemplate;
-import kr.co.kwt.devportal.secret.v2.model.template.properties.RedisProperties;
+import kr.co.kwt.devportal.secret.v2.model.properties.RedisProperties;
 import kr.co.kwt.devportal.secret.v2.repository.ResourceConfigurationTemplateRepository;
 import kr.co.kwt.devportal.secret.v2.utility.Flattener;
 import org.junit.jupiter.api.Test;
@@ -30,8 +28,11 @@ class ResourceConfigurationTemplateRepositoryTest {
                 .password("test")
                 .build();
 
-        ResourceConfigurationTemplate<?> resourceConfigurationTemplate = RedisResourceConfigurationTemplate
+        ResourceConfigurationTemplate<?> resourceConfigurationTemplate = ResourceConfigurationTemplate
                 .builder()
+                .resourceType(ResourceType.REDIS)
+                .supportsAccountProvisioning(true)
+                .properties(redisProperties)
                 .environment(Environment.DEV)
                 .properties(redisProperties)
                 .build();
@@ -48,12 +49,12 @@ class ResourceConfigurationTemplateRepositoryTest {
                 .findAll();
 
         for (ResourceConfigurationTemplate<?> resourceConfigurationTemplate : all) {
-//            Class<?> propertiesClass = resourceConfigurationTemplate
-//                    .getResourceType()
-//                    .getPropertiesClass();
-//
-//            Object properties = propertiesClass.cast(resourceConfigurationTemplate
-//                    .getProperties());
+            Class<?> propertiesClass = resourceConfigurationTemplate
+                    .getResourceType()
+                    .getPropertiesClass();
+
+            Object properties = propertiesClass.cast(resourceConfigurationTemplate
+                    .getProperties());
             flattener
                     .flattenMap(resourceConfigurationTemplate.getProperties())
                     .entrySet().stream()

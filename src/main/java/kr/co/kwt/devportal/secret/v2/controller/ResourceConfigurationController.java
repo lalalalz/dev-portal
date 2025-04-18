@@ -3,8 +3,8 @@ package kr.co.kwt.devportal.secret.v2.controller;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import kr.co.kwt.devportal.secret.v2.model.Environment;
-import kr.co.kwt.devportal.secret.v2.service.ResourceConfigurationResolver;
 import kr.co.kwt.devportal.secret.v2.service.ResourceConfigurationService;
+import kr.co.kwt.devportal.secret.v2.service.ResourceConfigurationTransformer;
 import kr.co.kwt.devportal.secret.v2.service.command.AddResourceConfigurationCommand;
 import kr.co.kwt.devportal.secret.v2.service.command.GetResourceConfigurationProperties;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class ResourceConfigurationController {
 
     private final ResourceConfigurationService resourceConfigurationService;
-    private final ResourceConfigurationResolver resourceConfigurationResolver;
+    private final ResourceConfigurationTransformer resourceConfigurationTransformer;
 
     @GetMapping("/")
     public String resourceConfigurationView() {
@@ -30,7 +30,7 @@ public class ResourceConfigurationController {
             @RequestParam("environment") @NotNull Environment environment
     ) {
         return new GetResourceConfigurationProperties(
-                resourceConfigurationResolver.resolve(
+                resourceConfigurationTransformer.transform(
                         resourceConfigurationService.getResourceConfigurations(service, environment)));
     }
 
@@ -40,7 +40,7 @@ public class ResourceConfigurationController {
             @RequestBody AddResourceConfigurationCommand command
     ) {
         return new GetResourceConfigurationProperties(
-                resourceConfigurationResolver.resolve(
+                resourceConfigurationTransformer.transform(
                         resourceConfigurationService.addResourceConfiguration(command)));
     }
 }

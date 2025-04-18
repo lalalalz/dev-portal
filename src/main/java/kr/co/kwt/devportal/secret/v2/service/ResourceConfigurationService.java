@@ -2,10 +2,10 @@ package kr.co.kwt.devportal.secret.v2.service;
 
 import kr.co.kwt.devportal.secret.v2.model.Environment;
 import kr.co.kwt.devportal.secret.v2.model.ResourceConfiguration;
+import kr.co.kwt.devportal.secret.v2.model.ResourceConfigurationTemplate;
 import kr.co.kwt.devportal.secret.v2.model.ResourceType;
 import kr.co.kwt.devportal.secret.v2.model.register.ProvisioningAccount;
 import kr.co.kwt.devportal.secret.v2.model.register.ProvisioningAccountRegister;
-import kr.co.kwt.devportal.secret.v2.model.template.ResourceConfigurationTemplate;
 import kr.co.kwt.devportal.secret.v2.repository.ResourceConfigurationRepository;
 import kr.co.kwt.devportal.secret.v2.service.command.AddResourceConfigurationCommand;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +34,9 @@ public class ResourceConfigurationService {
                 resourceConfigurationTemplateService
                         .searchResourceConfigurationTemplates()
                         .stream()
-                        .filter(template -> template.getEnvironment().equals(command.getEnvironment()))
+                        .filter(template -> template
+                                .getEnvironment()
+                                .equals(command.getEnvironment()))
                         .collect(Collectors.toMap(ResourceConfigurationTemplate::getResourceType, Function.identity()));
 
         return command

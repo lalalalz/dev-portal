@@ -1,8 +1,7 @@
-package kr.co.kwt.devportal.secret.v2.model.template;
+package kr.co.kwt.devportal.secret.v2.model;
 
-import kr.co.kwt.devportal.secret.v2.model.Environment;
-import kr.co.kwt.devportal.secret.v2.model.ResourceType;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -12,15 +11,16 @@ import org.springframework.lang.NonNull;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Document(collection = "resourceConfigurationTemplates_v2")
-public abstract class ResourceConfigurationTemplate<T> {
+public class ResourceConfigurationTemplate<T> {
 
     @Id
-    protected String id;
-    protected Environment environment;
-    protected ResourceType resourceType;
-    protected T properties;
-    protected boolean supportsAccountProvisioning;
+    private String id;
+    private Environment environment;
+    private ResourceType resourceType;
+    private T properties;
+    private boolean supportsAccountProvisioning;
 
+    @Builder
     public ResourceConfigurationTemplate(
             String id,
             @NonNull Environment environment,

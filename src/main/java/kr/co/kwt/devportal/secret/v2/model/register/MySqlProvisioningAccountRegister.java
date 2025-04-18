@@ -13,34 +13,43 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class MySqlProvisioningAccountRegister implements ProvisioningAccountRegister {
 
-    private final JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate devJdbcTemplate;
+    private final JdbcTemplate prodJdbcTemplate;
 
     @Override
     public ProvisioningAccount register(String service, Environment environment) {
-        return new ProvisioningAccount("test", "test");
-//        try {
-//            // 기본값 설정
-//            if (service == null || service.isEmpty()) {
-//                service = "user";
-//            }
-//
-//            // 랜덤 사용자 이름과 비밀번호 생성
-//            String username = generateUsername(service);
-//            String password = generateStrongPassword();
-//
-//            // 사용자 생성
-//            jdbcTemplate.execute("CREATE USER '" + username + "'@'%' IDENTIFIED BY '" + password + "'");
-//
-//            // 데이터베이스에 권한 부여
-//            jdbcTemplate.execute("GRANT ALL PRIVILEGES ON `" + service + "`.* TO '" + username + "'@'%'");
-//            jdbcTemplate.execute("FLUSH PRIVILEGES");
-//
-//            // 생성된 계정 정보 반환
-//            return new ProvisioningAccount(username, password);
-//        }
-//        catch (Exception e) {
-//            throw new MySqlProvisioningAccountRegisterException(e);
-//        }
+        try {
+            // 기본값 설정
+            if (service == null || service.isEmpty()) {
+                throw new MySqlProvisioningAccountRegisterException("service is not specified");
+            }
+
+            // 환경에 따라 적절한 JdbcTemplate 선택
+            JdbcTemplate jdbcTemplate = (environment == Environment.DEV)
+                    ? devJdbcTemplate
+                    : prodJdbcTemplate;
+
+            // 랜덤 사용자 이름과 비밀번호 생성
+            String username = generateUsername(service);
+            String password = generateStrongPassword();
+
+            // 사용자 생성 - 172.16.* IP 대역만 허용
+//            jdbcTemplate.execute("CREATE USER '" + username + "'@'172.16.%' IDENTIFIED BY '" + password + "'");
+            jdbcTemplate.execute("CREATE USER '" + username + "'@'192.168.%.%' IDENTIFIED BY '" + password + "'");
+
+
+            // 데이터베이스에 권한 부여 - 172.16.* IP 대역만 허용
+            jdbcTemplate.execute("GRANT ALL PRIVILEGES ON `" + "sys" + "`.* TO '" + username + "'@'192.168.%.%'");
+//            jdbcTemplate.execute("GRANT ALL PRIVILEGES ON `" + service + "`.* TO '" + username + "'@'172.16.%'");
+
+            jdbcTemplate.execute("FLUSH PRIVILEGES");
+
+            // 생성된 계정 정보 반환
+            return new ProvisioningAccount(username, password);
+        }
+        catch (Exception e) {
+            throw new MySqlProvisioningAccountRegisterException(e);
+        }
     }
 
     private String generateUsername(String prefix) {

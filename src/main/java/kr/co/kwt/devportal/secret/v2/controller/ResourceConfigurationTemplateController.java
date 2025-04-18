@@ -1,6 +1,6 @@
 package kr.co.kwt.devportal.secret.v2.controller;
 
-import kr.co.kwt.devportal.secret.v2.model.template.ResourceConfigurationTemplate;
+import kr.co.kwt.devportal.secret.v2.model.ResourceConfigurationTemplate;
 import kr.co.kwt.devportal.secret.v2.service.ResourceConfigurationTemplateService;
 import kr.co.kwt.devportal.secret.v2.service.command.AddResourceConfigurationTemplateCommand;
 import lombok.RequiredArgsConstructor;

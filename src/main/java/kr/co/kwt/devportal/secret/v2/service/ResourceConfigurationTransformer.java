@@ -14,9 +14,9 @@ import static kr.co.kwt.devportal.secret.v2.utility.Flattener.flattenMap;
 
 @Component
 @RequiredArgsConstructor
-public class ResourceConfigurationResolver {
+public class ResourceConfigurationTransformer {
 
-    public Map<String, Object> resolve(List<ResourceConfiguration> resourceConfigurations) {
+    public Map<String, Object> transform(List<ResourceConfiguration> resourceConfigurations) {
         return resourceConfigurations
                 .stream()
                 .map(resourceConfiguration -> Stream
@@ -31,10 +31,10 @@ public class ResourceConfigurationResolver {
                                         .stream())
                         .filter(entry -> entry.getValue() != null)
                         .collect(Collectors.toMap(
-                                entry -> resourceConfiguration
+                                entry -> (resourceConfiguration
                                         .getResourceConfigurationTemplate()
                                         .getResourceType()
-                                        .name() + "." + entry.getKey(),
+                                        .name() + "_" + entry.getKey()).toUpperCase(),
                                 Map.Entry::getValue)))
                 .collect(HashMap::new, Map::putAll, Map::putAll);
     }

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.validation.constraints.NotNull;
 import kr.co.kwt.devportal.secret.v2.model.Environment;
+import kr.co.kwt.devportal.secret.v2.model.ResourceConfigurationTemplate;
 import kr.co.kwt.devportal.secret.v2.model.ResourceType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -30,6 +31,18 @@ public class AddResourceConfigurationTemplateCommand<T> {
     private Environment environment;
     @NotNull
     private T properties;
+    @NotNull
+    private Boolean supportsAccountProvisioning;
+
+    public ResourceConfigurationTemplate<?> toResourceConfigurationTemplate() {
+        return new ResourceConfigurationTemplate<>(
+                null,
+                environment,
+                resourceType,
+                properties,
+                supportsAccountProvisioning
+        );
+    }
 
     public static class AddResourceConfigurationTemplateCommandDeserializer
             extends JsonDeserializer<AddResourceConfigurationTemplateCommand<?>> {
@@ -37,6 +50,7 @@ public class AddResourceConfigurationTemplateCommand<T> {
         public static final String RESOURCE_TYPE_FIELD = "resourceType";
         public static final String ENVIRONMENT_FIELD = "environment";
         public static final String PROPERTIES_FIELD = "properties";
+        public static final String SUPPORTS_ACCOUNT_PROVISIONING_FIELD = "supportsAccountProvisioning";
 
         @Override
         public AddResourceConfigurationTemplateCommand<?> deserialize(
@@ -58,7 +72,15 @@ public class AddResourceConfigurationTemplateCommand<T> {
                     rootNode.get(PROPERTIES_FIELD),
                     resourceType.getPropertiesClass());
 
-            return new AddResourceConfigurationTemplateCommand<>(resourceType, environment, properties);
+            Boolean supportsAccountProvisioning = objectMapper.treeToValue(
+                    rootNode.get(SUPPORTS_ACCOUNT_PROVISIONING_FIELD),
+                    Boolean.class);
+
+            return new AddResourceConfigurationTemplateCommand<>(
+                    resourceType,
+                    environment,
+                    properties,
+                    supportsAccountProvisioning);
         }
     }
 }

@@ -10,22 +10,21 @@ spring:
 
   data:
     mongodb:
-      host: localhost
-      port: 27017
-      database: dev-portal
-      username: admin
-      password: password
+      host: ${MONGO_HOST}
+      port: ${MONGO_PORT}
+      database: ${MONGO_DATABASE}
+      username: ${MONGO_USERNAME}
+      password: ${MONGO_PASSWORD}
       authentication-database: admin
 
   datasource:
-    url: jdbc:mysql://192.168.100.100:30306/sys?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    username: dev_user
-    password: qlalfqjsgh!486
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
-logging:
-  level:
-    org:
-      springframework:
-        jdbc:
-          core: TRACE
+    dev:
+      url: ${DB_URL}
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    prod:
+      url: ${DB_URL}
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
